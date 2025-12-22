@@ -18,12 +18,24 @@ public class CourseService {
         return course;
     }
 
+    public void deactivateCourse(int id) {
+        Course course = findById(id);
+        course.setActive(false);
+    }
 
     public List<Course> listCourses() {
         return new ArrayList<>(courses);
     }
 
-
+    public List<Course> listActiveCourses() {
+        List<Course> result = new ArrayList<>();
+        for (Course course : courses) {
+            if (course.isActive()) {
+                result.add(course);
+            }
+        }
+        return result;
+    }
 
     private Course findById(int id) {
         for (Course course : courses) {
