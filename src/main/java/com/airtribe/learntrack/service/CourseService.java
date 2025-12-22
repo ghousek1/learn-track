@@ -19,7 +19,7 @@ public class CourseService {
     public Course getCourse(int id) {
         Course course = courses.get(id);
         if (course == null) {
-            throw new EntityNotFoundException("Course not found");
+            throw new EntityNotFoundException("Course not found ");
         }
         return course;
     }
