@@ -1,8 +1,7 @@
 package com.airtribe.learntrack.entity;
 
-import com.airtribe.learntrack.Main;
-
 public class Student extends Person {
+
     private String batch;
     private boolean active;
 
@@ -25,8 +24,20 @@ public class Student extends Person {
         return batch;
     }
 
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+
     public boolean isActive() {
         return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
