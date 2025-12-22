@@ -4,23 +4,33 @@ import com.airtribe.learntrack.entity.Course;
 import com.airtribe.learntrack.exception.EntityNotFoundException;
 import com.airtribe.learntrack.util.IdGenerator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CourseService {
-    private final Map<Integer, Course> courses = new HashMap<>();
 
-    public Course addCourse(Course course) {
-        course.setId(IdGenerator.nextId());
-        courses.put(course.getId(), course);
+    private final List<Course> courses = new ArrayList<>();
+
+    public Course addCourse(String name, String description, int duration) {
+        Course course = new Course(name, description, duration);
+        course.setId(IdGenerator.getNextCourseId());
+        courses.add(course);
         return course;
     }
 
-    public Course getCourse(int id) {
-        Course course = courses.get(id);
-        if (course == null) {
-            throw new EntityNotFoundException("Course not found ");
+
+    public List<Course> listCourses() {
+        return new ArrayList<>(courses);
+    }
+
+
+
+    private Course findById(int id) {
+        for (Course course : courses) {
+            if (course.getId() == id) {
+                return course;
+            }
         }
-        return course;
+        throw new EntityNotFoundException("Course not found");
     }
 }
