@@ -4,23 +4,35 @@ import com.airtribe.learntrack.entity.Student;
 import com.airtribe.learntrack.exception.EntityNotFoundException;
 import com.airtribe.learntrack.util.IdGenerator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudentService {
-    private final Map<Integer, Student> students = new HashMap<>();
 
-    public Student addStudent(Student student) {
-        student.setId(IdGenerator.nextId());
-        students.put(student.getId(), student);
+    private final List<Student> students = new ArrayList<>();
+
+    public Student addStudent(String firstName, String lastName, String batch) {
+        Student student = new Student(
+                IdGenerator.getNextStudentId(),
+                firstName,
+                lastName,
+                batch
+        );
+        students.add(student);
         return student;
     }
 
-    public Student getStudent(int id) {
-        Student student = students.get(id);
-        if (student == null) {
-            throw new EntityNotFoundException("Student not found");
-        }
+    public Student addStudent(String firstName, String lastName, String email, String batch) {
+        Student student = new Student(
+                IdGenerator.getNextStudentId(),
+                firstName,
+                lastName,
+                email,
+                batch
+        );
+        students.add(student);
         return student;
     }
+
+ 
 }
