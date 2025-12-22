@@ -34,5 +34,42 @@ public class StudentService {
         return student;
     }
 
- 
+    public void removeStudent(int id) {
+        Student student = findById(id);
+        students.remove(student);
+    }
+
+    public void updateStudent(int id, String batch) {
+        Student student = findById(id);
+        student.setBatch(batch);
+    }
+
+    public void updateStudent(int id, String email, boolean active) {
+        Student student = findById(id);
+        student.setEmail(email);
+        student.setActive(active);
+    }
+
+    public List<Student> listStudents() {
+        return new ArrayList<>(students);
+    }
+
+    public List<Student> listActiveStudents() {
+        List<Student> result = new ArrayList<>();
+        for (Student student : students) {
+            if (student.isActive()) {
+                result.add(student);
+            }
+        }
+        return result;
+    }
+
+    private Student findById(int id) {
+        for (Student student : students) {
+            if (student.getId() == id) {
+                return student;
+            }
+        }
+        throw new EntityNotFoundException("Student not found");
+    }
 }
