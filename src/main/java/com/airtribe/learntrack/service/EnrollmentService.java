@@ -18,6 +18,16 @@ public class EnrollmentService {
         return enrollment;
     }
 
+    public void completeEnrollment(int enrollmentId) {
+        Enrollment enrollment = findById(enrollmentId);
+        enrollment.setStatus(EnrollmentStatus.COMPLETED);
+    }
+
+    public void cancelEnrollment(int enrollmentId) {
+        Enrollment enrollment = findById(enrollmentId);
+        enrollment.setStatus(EnrollmentStatus.CANCELLED);
+    }
+
     public List<Enrollment> listEnrollments() {
         return new ArrayList<>(enrollments);
     }
