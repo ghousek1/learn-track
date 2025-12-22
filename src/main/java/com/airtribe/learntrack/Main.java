@@ -1,29 +1,24 @@
 package com.airtribe.learntrack;
 
-import com.airtribe.learntrack.entity.Course;
+import com.airtribe.learntrack.entity.Person;
 import com.airtribe.learntrack.entity.Student;
-import com.airtribe.learntrack.service.CourseService;
-import com.airtribe.learntrack.service.EnrollmentService;
+import com.airtribe.learntrack.entity.Trainer;
 import com.airtribe.learntrack.service.StudentService;
-
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
+        Person student = new Student(1, "Tony", "Ghouse", "tonyghouse@airtribe.com", "B1");
+        Person trainer = new Trainer(2, "Mubina", "Begum", "mubina@airtribe.com", "Java");
+
+
+        System.out.println(student.getDisplayName());
+        System.out.println(trainer.getDisplayName());
+
+        Student studentTwo = new Student(2, "K", "Ghouse", "Kghouse@airtribe.com", "B1");
         StudentService studentService = new StudentService();
-        CourseService courseService = new CourseService();
-        EnrollmentService enrollmentService = new EnrollmentService();
+        int studentTwoId = studentService.addStudent(studentTwo).getId();
 
-        Scanner sc = new Scanner(System.in);
-
-        Student student = new Student("Tony", "Ghouse", "B1");
-        studentService.addStudent(student);
-
-        Course course = new Course("Java Backend", "Spring and Core Java", 12);
-        courseService.addCourse(course);
-
-        enrollmentService.enroll(student.getId(), course.getId());
-
-        System.out.println("Student enrolled successfully");
+        System.out.println(studentService.getStudent(studentTwoId).getEmail());
     }
 }
