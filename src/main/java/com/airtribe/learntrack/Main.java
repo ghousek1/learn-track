@@ -1,24 +1,36 @@
 package com.airtribe.learntrack;
 
-import com.airtribe.learntrack.entity.Person;
 import com.airtribe.learntrack.entity.Student;
-import com.airtribe.learntrack.entity.Trainer;
+import com.airtribe.learntrack.service.CourseService;
+import com.airtribe.learntrack.service.EnrollmentService;
 import com.airtribe.learntrack.service.StudentService;
 
 public class Main {
     public static void main(String[] args) {
 
-        Person student = new Student(1, "Tony", "Ghouse", "tonyghouse@airtribe.com", "B1");
-        Person trainer = new Trainer(2, "Mubina", "Begum", "mubina@airtribe.com", "Java");
-
-
-        System.out.println(student.getDisplayName());
-        System.out.println(trainer.getDisplayName());
-
-        Student studentTwo = new Student(2, "K", "Ghouse", "Kghouse@airtribe.com", "B1");
         StudentService studentService = new StudentService();
-        int studentTwoId = studentService.addStudent(studentTwo).getId();
+        CourseService courseService = new CourseService();
+        EnrollmentService enrollmentService = new EnrollmentService();
 
-        System.out.println(studentService.getStudent(studentTwoId).getEmail());
+        Student s1 = studentService.addStudent("Tony", "Ghouse", "B1");
+        Student s2 = studentService.addStudent("Rohit", "Sharma", "rohit@mail.com", "B2");
+        Student s3 = studentService.addStudent("Virak", "Kohli", "B1");
+
+        studentService.updateStudent(s1.getId(), "B3");
+        studentService.updateStudent(s2.getId(), "updated@mail.com", false);
+
+        courseService.addCourse("Java Backend", "Core + Spring", 12);
+        courseService.addCourse("System Design", "Scalable systems", 8);
+
+        enrollmentService.enrollStudent(s1.getId(), 1);
+        enrollmentService.enrollStudent(s3.getId(), 2);
+
+        for (Student student : studentService.listStudents()) {
+            System.out.println(student.getDisplayName());
+        }
+
+        for (Student student : studentService.listActiveStudents()) {
+            System.out.println("Active: " + student.getDisplayName());
+        }
     }
 }
