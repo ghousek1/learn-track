@@ -18,24 +18,29 @@ public class EnrollmentService {
         return enrollment;
     }
 
-    public void completeEnrollment(int enrollmentId) {
-        Enrollment enrollment = findById(enrollmentId);
-        enrollment.setStatus(EnrollmentStatus.COMPLETED);
+    public List<Enrollment> getEnrollmentsByStudent(int studentId) {
+        List<Enrollment> result = new ArrayList<>();
+        for (Enrollment e : enrollments) {
+            if (e.getStudentId() == studentId) {
+                result.add(e);
+            }
+        }
+        return result;
     }
 
-    public void cancelEnrollment(int enrollmentId) {
+    public void updateStatus(int enrollmentId, EnrollmentStatus status) {
         Enrollment enrollment = findById(enrollmentId);
-        enrollment.setStatus(EnrollmentStatus.CANCELLED);
+        enrollment.setStatus(status);
     }
 
-    public List<Enrollment> listEnrollments() {
+    public List<Enrollment> listAll() {
         return new ArrayList<>(enrollments);
     }
 
     private Enrollment findById(int id) {
-        for (Enrollment enrollment : enrollments) {
-            if (enrollment.getId() == id) {
-                return enrollment;
+        for (Enrollment e : enrollments) {
+            if (e.getId() == id) {
+                return e;
             }
         }
         throw new RuntimeException("Enrollment not found");
