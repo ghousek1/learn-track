@@ -27,7 +27,7 @@ public class Main {
             switch (choice) {
                 case "1" -> studentMenu(sc);
                 case "2" -> courseMenu(sc);
-                //ase "3" -> enrollmentMenu(sc);
+                case "3" -> enrollmentMenu(sc);
                 case "0" -> {
                     System.out.println("Exiting application");
                     return;
@@ -141,6 +141,56 @@ public class Main {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    private static void enrollmentMenu(Scanner sc) {
+        System.out.println();
+        System.out.println("1. Enroll Student");
+        System.out.println("2. View Student Enrollments");
+        System.out.println("3. Update Enrollment Status");
+        System.out.print("Choose option: ");
+
+        String option = sc.nextLine();
+
+        try {
+            switch (option) {
+                case "1" -> {
+                    System.out.print("Student ID: ");
+                    int sid = Integer.parseInt(sc.nextLine());
+                    System.out.print("Course ID: ");
+                    int cid = Integer.parseInt(sc.nextLine());
+
+                    Enrollment e = enrollmentService.enrollStudent(sid, cid);
+                    System.out.println("Enrollment created with ID " + e.getId());
+                }
+                case "2" -> {
+                    System.out.print("Student ID: ");
+                    int sid = Integer.parseInt(sc.nextLine());
+                    List<Enrollment> list = enrollmentService.getEnrollmentsByStudent(sid);
+                    for (Enrollment e : list) {
+                        System.out.println(
+                                e.getId() + " | course=" + e.getCourseId() + " | " + e.getStatus()
+                        );
+                    }
+                }
+                case "3" -> {
+                    System.out.print("Enrollment ID: ");
+                    int eid = Integer.parseInt(sc.nextLine());
+                    System.out.print("Status (ACTIVE / COMPLETED / CANCELLED): ");
+                    String status = sc.nextLine();
+
+                    enrollmentService.updateStatus(
+                            eid,
+                            EnrollmentStatus.valueOf(status)
+                    );
+
+                    System.out.println("Enrollment updated");
+                }
+                default -> System.out.println("Invalid option");
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid input or operation failed");
         }
     }
 
