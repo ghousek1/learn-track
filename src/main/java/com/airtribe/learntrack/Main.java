@@ -1,36 +1,105 @@
 package com.airtribe.learntrack;
 
+import com.airtribe.learntrack.entity.Course;
+import com.airtribe.learntrack.entity.Enrollment;
+import com.airtribe.learntrack.entity.EnrollmentStatus;
 import com.airtribe.learntrack.entity.Student;
 import com.airtribe.learntrack.service.CourseService;
 import com.airtribe.learntrack.service.EnrollmentService;
 import com.airtribe.learntrack.service.StudentService;
 
+import java.util.List;
+import java.util.Scanner;
+
 public class Main {
+
+    private static final StudentService studentService = new StudentService();
+    private static final CourseService courseService = new CourseService();
+    private static final EnrollmentService enrollmentService = new EnrollmentService();
+
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
 
-        StudentService studentService = new StudentService();
-        CourseService courseService = new CourseService();
-        EnrollmentService enrollmentService = new EnrollmentService();
+        while (true) {
+            showMainMenu();
+            String choice = sc.nextLine();
 
-        Student s1 = studentService.addStudent("Tony", "Ghouse", "B1");
-        Student s2 = studentService.addStudent("Rohit", "Sharma", "rohit@mail.com", "B2");
-        Student s3 = studentService.addStudent("Virak", "Kohli", "B1");
-
-        studentService.updateStudent(s1.getId(), "B3");
-        studentService.updateStudent(s2.getId(), "updated@mail.com", false);
-
-        courseService.addCourse("Java Backend", "Core + Spring", 12);
-        courseService.addCourse("System Design", "Scalable systems", 8);
-
-        enrollmentService.enrollStudent(s1.getId(), 1);
-        enrollmentService.enrollStudent(s3.getId(), 2);
-
-        for (Student student : studentService.listStudents()) {
-            System.out.println(student.getDisplayName());
-        }
-
-        for (Student student : studentService.listActiveStudents()) {
-            System.out.println("Active: " + student.getDisplayName());
+            switch (choice) {
+                case "1" -> studentMenu(sc);
+                //case "2" -> courseMenu(sc);
+                //ase "3" -> enrollmentMenu(sc);
+                case "0" -> {
+                    System.out.println("Exiting application");
+                    return;
+                }
+                default -> System.out.println("Invalid option");
+            }
         }
     }
+
+    private static void showMainMenu() {
+        System.out.println();
+        System.out.println("1. Student Management");
+        System.out.println("2. Course Management");
+        System.out.println("3. Enrollment Management");
+        System.out.println("0. Exit");
+        System.out.print("Choose option: ");
+    }
+
+    private static void studentMenu(Scanner sc) {
+        System.out.println();
+        System.out.println("1. Add Student");
+        System.out.println("2. View All Students");
+        System.out.println("3. Search Student by ID");
+        System.out.println("4. Deactivate Student");
+        System.out.print("Choose option: ");
+
+        String option = sc.nextLine();
+
+        try {
+            switch (option) {
+                case "1" -> {
+                    System.out.print("First name: ");
+                    String fn = sc.nextLine();
+
+                    System.out.print("Last name: ");
+                    String ln = sc.nextLine();
+
+                    System.out.print("Email (optional): ");
+                    String email = sc.nextLine();
+                    
+                    System.out.print("Batch: ");
+                    String batch = sc.nextLine();
+
+                    Student s = email.isBlank()
+                            ? studentService.addStudent(fn, ln, batch)
+                            : studentService.addStudent(fn, ln, email, batch);
+
+                    System.out.println("Created student with ID " + s.getId());
+                }
+                case "2" -> {
+                    for (Student s : studentService.listStudents()) {
+                        System.out.println(s.getId() + " | " + s.getDisplayName() + " | active=" + s.isActive());
+                    }
+                }
+                case "3" -> {
+                    System.out.print("Student ID: ");
+                    int id = Integer.parseInt(sc.nextLine());
+                    Student s = studentService.findById(id);
+                    System.out.println(s.getDisplayName() + " | batch=" + s.getBatch());
+                }
+                case "4" -> {
+                    System.out.print("Student ID: ");
+                    int id = Integer.parseInt(sc.nextLine());
+                    studentService.updateStudent(id, null, false);
+                    System.out.println("Student deactivated");
+                }
+                default -> System.out.println("Invalid option");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
 }

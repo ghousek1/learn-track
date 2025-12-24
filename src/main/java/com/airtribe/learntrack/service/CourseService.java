@@ -37,7 +37,7 @@ public class CourseService {
         return result;
     }
 
-    private Course findById(int id) {
+    public Course findById(int id) {
         for (Course course : courses) {
             if (course.getId() == id) {
                 return course;
