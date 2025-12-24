@@ -26,7 +26,7 @@ public class Main {
 
             switch (choice) {
                 case "1" -> studentMenu(sc);
-                //case "2" -> courseMenu(sc);
+                case "2" -> courseMenu(sc);
                 //ase "3" -> enrollmentMenu(sc);
                 case "0" -> {
                     System.out.println("Exiting application");
@@ -67,7 +67,7 @@ public class Main {
 
                     System.out.print("Email (optional): ");
                     String email = sc.nextLine();
-                    
+
                     System.out.print("Batch: ");
                     String batch = sc.nextLine();
 
@@ -100,6 +100,51 @@ public class Main {
             System.out.println(e.getMessage());
         }
     }
+
+    private static void courseMenu(Scanner sc) {
+        System.out.println();
+        System.out.println("1. Add Course");
+        System.out.println("2. View All Courses");
+        System.out.println("3. Activate / Deactivate Course");
+        System.out.print("Choose option: ");
+
+        String option = sc.nextLine();
+
+        try {
+            switch (option) {
+                case "1" -> {
+                    System.out.print("Course name: ");
+                    String name = sc.nextLine();
+
+                    System.out.print("Description: ");
+                    String desc = sc.nextLine();
+
+                    System.out.print("Duration (weeks): ");
+                    int weeks = Integer.parseInt(sc.nextLine());
+
+                    Course c = courseService.addCourse(name, desc, weeks);
+                    System.out.println("Created course with ID " + c.getId());
+                }
+                case "2" -> {
+                    for (Course c : courseService.listCourses()) {
+                        System.out.println(c.getId() + " | " + c.getCourseName() + " | active=" + c.isActive());
+                    }
+                }
+                case "3" -> {
+                    System.out.print("Course ID: ");
+                    int id = Integer.parseInt(sc.nextLine());
+                    Course c = courseService.findById(id);
+                    c.setActive(!c.isActive());
+                    System.out.println("Course status updated");
+                }
+                default -> System.out.println("Invalid option");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
 
 
 }
