@@ -1,5 +1,6 @@
 package com.airtribe.learntrack;
 
+import com.airtribe.learntrack.constants.MenuOptions;
 import com.airtribe.learntrack.entity.Course;
 import com.airtribe.learntrack.entity.Enrollment;
 import com.airtribe.learntrack.entity.EnrollmentStatus;
@@ -8,6 +9,7 @@ import com.airtribe.learntrack.exception.EntityNotFoundException;
 import com.airtribe.learntrack.service.CourseService;
 import com.airtribe.learntrack.service.EnrollmentService;
 import com.airtribe.learntrack.service.StudentService;
+import com.airtribe.learntrack.util.InputValidator;
 
 import java.util.List;
 import java.util.Scanner;
@@ -26,10 +28,10 @@ public class Main {
             String choice = sc.nextLine();
 
             switch (choice) {
-                case "1" -> studentMenu(sc);
-                case "2" -> courseMenu(sc);
-                case "3" -> enrollmentMenu(sc);
-                case "0" -> {
+                case MenuOptions.STUDENT_MENU -> studentMenu(sc);
+                case MenuOptions.COURSE_MENU -> courseMenu(sc);
+                case MenuOptions.ENROLLMENT_MENU -> enrollmentMenu(sc);
+                case MenuOptions.EXIT -> {
                     System.out.println("Exiting application");
                     return;
                 }
@@ -61,18 +63,18 @@ public class Main {
             switch (option) {
                 case "1" -> {
                     System.out.print("First name: ");
-                    String fn = sc.nextLine();
+                    String fn = InputValidator.requireNonBlank(sc.nextLine(), "First name");
 
                     System.out.print("Last name: ");
-                    String ln = sc.nextLine();
+                    String ln = InputValidator.requireNonBlank(sc.nextLine(), "Last name");
 
                     System.out.print("Email (optional): ");
                     String email = sc.nextLine();
 
                     System.out.print("Batch: ");
-                    String batch = sc.nextLine();
+                    String batch = InputValidator.requireNonBlank(sc.nextLine(), "Batch");
 
-                    Student s = email.isBlank()
+                    Student s = InputValidator.isBlank(email)
                             ? studentService.addStudent(fn, ln, batch)
                             : studentService.addStudent(fn, ln, email, batch);
 
@@ -82,29 +84,27 @@ public class Main {
                     for (Student s : studentService.listStudents()) {
                         System.out.println(
                                 s.getId() + " | " +
-                                        s.getDisplayName() + " | active=" + s.isActive()
+                                s.getDisplayName() + " | active=" + s.isActive()
                         );
                     }
                 }
                 case "3" -> {
                     System.out.print("Student ID: ");
-                    int id = Integer.parseInt(sc.nextLine());
-                    Student s = studentService.findById(id);
+                    int id = InputValidator.parseInt(sc.nextLine());
+                    Student s = studentService.getStudent(id);
                     System.out.println(
                             s.getDisplayName() + " | batch=" + s.getBatch() + " | active=" + s.isActive()
                     );
                 }
                 case "4" -> {
                     System.out.print("Student ID: ");
-                    int id = Integer.parseInt(sc.nextLine());
+                    int id = InputValidator.parseInt(sc.nextLine());
                     studentService.deactivateStudent(id);
                     System.out.println("Student deactivated");
                 }
                 default -> System.out.println("Invalid option");
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid number");
-        } catch (EntityNotFoundException e) {
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println("Operation failed");
@@ -124,13 +124,13 @@ public class Main {
             switch (option) {
                 case "1" -> {
                     System.out.print("Course name: ");
-                    String name = sc.nextLine();
+                    String name = InputValidator.requireNonBlank(sc.nextLine(), "Course name");
 
                     System.out.print("Description: ");
-                    String desc = sc.nextLine();
+                    String desc = InputValidator.requireNonBlank(sc.nextLine(), "Description");
 
                     System.out.print("Duration (weeks): ");
-                    int weeks = Integer.parseInt(sc.nextLine());
+                    int weeks = InputValidator.parseInt(sc.nextLine());
 
                     Course c = courseService.addCourse(name, desc, weeks);
                     System.out.println("Created course with ID " + c.getId());
@@ -139,22 +139,20 @@ public class Main {
                     for (Course c : courseService.listCourses()) {
                         System.out.println(
                                 c.getId() + " | " +
-                                        c.getCourseName() + " | active=" + c.isActive()
+                                c.getCourseName() + " | active=" + c.isActive()
                         );
                     }
                 }
                 case "3" -> {
                     System.out.print("Course ID: ");
-                    int id = Integer.parseInt(sc.nextLine());
-                    Course c = courseService.findById(id);
+                    int id = InputValidator.parseInt(sc.nextLine());
+                    Course c = courseService.getCourse(id);
                     c.setActive(!c.isActive());
                     System.out.println("Course status updated");
                 }
                 default -> System.out.println("Invalid option");
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid number");
-        } catch (EntityNotFoundException e) {
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println("Operation failed");
@@ -174,17 +172,17 @@ public class Main {
             switch (option) {
                 case "1" -> {
                     System.out.print("Student ID: ");
-                    int sid = Integer.parseInt(sc.nextLine());
+                    int sid = InputValidator.parseInt(sc.nextLine());
 
                     System.out.print("Course ID: ");
-                    int cid = Integer.parseInt(sc.nextLine());
+                    int cid = InputValidator.parseInt(sc.nextLine());
 
                     Enrollment e = enrollmentService.enrollStudent(sid, cid);
                     System.out.println("Enrollment created with ID " + e.getId());
                 }
                 case "2" -> {
                     System.out.print("Student ID: ");
-                    int sid = Integer.parseInt(sc.nextLine());
+                    int sid = InputValidator.parseInt(sc.nextLine());
                     List<Enrollment> list = enrollmentService.getEnrollmentsByStudent(sid);
                     if (list.isEmpty()) {
                         System.out.println("No enrollments found");
@@ -192,32 +190,24 @@ public class Main {
                         for (Enrollment e : list) {
                             System.out.println(
                                     e.getId() + " | course=" +
-                                            e.getCourseId() + " | " + e.getStatus()
+                                    e.getCourseId() + " | " + e.getStatus()
                             );
                         }
                     }
                 }
                 case "3" -> {
                     System.out.print("Enrollment ID: ");
-                    int eid = Integer.parseInt(sc.nextLine());
+                    int eid = InputValidator.parseInt(sc.nextLine());
 
                     System.out.print("Status (ACTIVE / COMPLETED / CANCELLED): ");
-                    String status = sc.nextLine();
+                    EnrollmentStatus status = EnrollmentStatus.valueOf(sc.nextLine());
 
-                    enrollmentService.updateStatus(
-                            eid,
-                            EnrollmentStatus.valueOf(status)
-                    );
-
+                    enrollmentService.updateStatus(eid, status);
                     System.out.println("Enrollment updated");
                 }
                 default -> System.out.println("Invalid option");
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid number");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid status value");
-        } catch (EntityNotFoundException e) {
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println("Operation failed");

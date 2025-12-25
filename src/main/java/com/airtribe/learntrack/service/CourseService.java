@@ -30,7 +30,7 @@ public class CourseService {
         return courseRepository.findActiveCourses();
     }
 
-    public Course findById(int id) {
+    public Course getCourse(int id) {
         return courseRepository.findById(id);
     }
 }
