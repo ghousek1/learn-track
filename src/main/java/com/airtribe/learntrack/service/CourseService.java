@@ -38,11 +38,11 @@ public class CourseService {
     }
 
     public Course findById(int id) {
-        for (Course course : courses) {
-            if (course.getId() == id) {
-                return course;
+        for (Course c : courses) {
+            if (c.getId() == id) {
+                return c;
             }
         }
-        throw new EntityNotFoundException("Course not found");
+        throw new EntityNotFoundException("Course with ID " + id + " not found");
     }
 }

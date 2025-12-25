@@ -4,6 +4,7 @@ import com.airtribe.learntrack.entity.Course;
 import com.airtribe.learntrack.entity.Enrollment;
 import com.airtribe.learntrack.entity.EnrollmentStatus;
 import com.airtribe.learntrack.entity.Student;
+import com.airtribe.learntrack.exception.EntityNotFoundException;
 import com.airtribe.learntrack.service.CourseService;
 import com.airtribe.learntrack.service.EnrollmentService;
 import com.airtribe.learntrack.service.StudentService;
@@ -79,25 +80,34 @@ public class Main {
                 }
                 case "2" -> {
                     for (Student s : studentService.listStudents()) {
-                        System.out.println(s.getId() + " | " + s.getDisplayName() + " | active=" + s.isActive());
+                        System.out.println(
+                                s.getId() + " | " +
+                                        s.getDisplayName() + " | active=" + s.isActive()
+                        );
                     }
                 }
                 case "3" -> {
                     System.out.print("Student ID: ");
                     int id = Integer.parseInt(sc.nextLine());
                     Student s = studentService.findById(id);
-                    System.out.println(s.getDisplayName() + " | batch=" + s.getBatch());
+                    System.out.println(
+                            s.getDisplayName() + " | batch=" + s.getBatch() + " | active=" + s.isActive()
+                    );
                 }
                 case "4" -> {
                     System.out.print("Student ID: ");
                     int id = Integer.parseInt(sc.nextLine());
-                    studentService.updateStudent(id, null, false);
+                    studentService.deactivateStudent(id);
                     System.out.println("Student deactivated");
                 }
                 default -> System.out.println("Invalid option");
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a valid number");
+        } catch (EntityNotFoundException e) {
             System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Operation failed");
         }
     }
 
@@ -127,7 +137,10 @@ public class Main {
                 }
                 case "2" -> {
                     for (Course c : courseService.listCourses()) {
-                        System.out.println(c.getId() + " | " + c.getCourseName() + " | active=" + c.isActive());
+                        System.out.println(
+                                c.getId() + " | " +
+                                        c.getCourseName() + " | active=" + c.isActive()
+                        );
                     }
                 }
                 case "3" -> {
@@ -139,8 +152,12 @@ public class Main {
                 }
                 default -> System.out.println("Invalid option");
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a valid number");
+        } catch (EntityNotFoundException e) {
             System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Operation failed");
         }
     }
 
@@ -158,6 +175,7 @@ public class Main {
                 case "1" -> {
                     System.out.print("Student ID: ");
                     int sid = Integer.parseInt(sc.nextLine());
+
                     System.out.print("Course ID: ");
                     int cid = Integer.parseInt(sc.nextLine());
 
@@ -168,15 +186,21 @@ public class Main {
                     System.out.print("Student ID: ");
                     int sid = Integer.parseInt(sc.nextLine());
                     List<Enrollment> list = enrollmentService.getEnrollmentsByStudent(sid);
-                    for (Enrollment e : list) {
-                        System.out.println(
-                                e.getId() + " | course=" + e.getCourseId() + " | " + e.getStatus()
-                        );
+                    if (list.isEmpty()) {
+                        System.out.println("No enrollments found");
+                    } else {
+                        for (Enrollment e : list) {
+                            System.out.println(
+                                    e.getId() + " | course=" +
+                                            e.getCourseId() + " | " + e.getStatus()
+                            );
+                        }
                     }
                 }
                 case "3" -> {
                     System.out.print("Enrollment ID: ");
                     int eid = Integer.parseInt(sc.nextLine());
+
                     System.out.print("Status (ACTIVE / COMPLETED / CANCELLED): ");
                     String status = sc.nextLine();
 
@@ -189,12 +213,14 @@ public class Main {
                 }
                 default -> System.out.println("Invalid option");
             }
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a valid number");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid status value");
+        } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
         } catch (Exception e) {
-            System.out.println("Invalid input or operation failed");
+            System.out.println("Operation failed");
         }
     }
-
-
-
-
 }
