@@ -57,7 +57,7 @@ public class StudentService {
         return studentRepository.findActiveStudents();
     }
 
-    public Student findById(int id) {
+    public Student getStudent(int id) {
         return studentRepository.findById(id);
     }
 
