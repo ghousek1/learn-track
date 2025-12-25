@@ -1,38 +1,58 @@
+################################
+# Java / Maven
+################################
+
+# Compiled bytecode
+*.class
+
+# Maven build output
 target/
+
+# Maven wrapper (keep)
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+
+################################
+# IDEs
+################################
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
+.idea/
 *.iml
+*.iws
 *.ipr
 
-### Eclipse ###
-.apt_generated
+### Eclipse / Spring Tool Suite ###
+.apt_generated/
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
-.sts4-cache
+.sts4-cache/
 
 ### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
 
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
+################################
+# Gradle (if ever added)
+################################
+build/
+.gradle/
+
+################################
+# OS files
+################################
 .DS_Store
+Thumbs.db
+
+################################
+# Logs
+################################
+*.log
