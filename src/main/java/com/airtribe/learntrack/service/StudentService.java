@@ -65,11 +65,17 @@ public class StudentService {
     }
 
     public Student findById(int id) {
-        for (Student student : students) {
-            if (student.getId() == id) {
-                return student;
+        for (Student s : students) {
+            if (s.getId() == id) {
+                return s;
             }
         }
-        throw new EntityNotFoundException("Student not found");
+        throw new EntityNotFoundException("Student with ID " + id + " not found");
     }
+
+    public void deactivateStudent(int id) {
+        Student student = findById(id);
+        student.setActive(false);
+    }
+
 }
